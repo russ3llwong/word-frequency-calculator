@@ -43,7 +43,7 @@ def index():
         # text processing
         if r:
             raw = BeautifulSoup(r.text, "html.parser").get_text()
-            nltk.data.append("./nltk_data") # set the path
+            #print(raw)
             tokens = nltk.word_tokenize(raw)
             text = nltk.Text(tokens)
             # remove punctuation and count raw words
@@ -59,6 +59,8 @@ def index():
                 key=operator.itemgetter(1),
                 reverse=True
             )
+            print("R E S U L T S")
+            print(results[:10])
             try:
                 result = Result(
                     url=url,
