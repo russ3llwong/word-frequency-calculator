@@ -44,6 +44,7 @@ def index():
         if r:
             raw = BeautifulSoup(r.text, "html.parser").get_text()
             #print(raw)
+            nltk.data.path.append('./nltk_data/')
             tokens = nltk.word_tokenize(raw)
             text = nltk.Text(tokens)
             # remove punctuation and count raw words
