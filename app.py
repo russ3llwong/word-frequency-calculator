@@ -3,6 +3,7 @@ import requests
 import operator
 import re
 import nltk
+import json
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from stop_words import stops
@@ -68,22 +69,25 @@ def count_and_save_words(url):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    return render_template("index.html")
 
-    results = {}
-    if request.method == "POST":
-        # this import solves a rq bug which currently exists
-        # from app import count_and_save_words
+@app.route('/start', methods=['POST'])
+def get_counts():
+    # this import solves a rq bug which currently exists
+    from app import count_and_save_words
 
-        # get url that the person has entered
-        url = request.form['url']
-        if not url[:8].startswith(('https://', 'http://')):
-            url = 'http://' + url
-        job = q.enqueue_call(
-            count_and_save_words, args=(url,), result_ttl=5000
-        )
-        print(job.get_id())
-        
-    return render_template('index.html', results=results)
+    # get url
+    data = json.loads(request.data.decode())
+    url = data["url"]
+    if not url[:8].startswith(('https://', 'http://')):
+        url = 'http://' + url
+    # start job
+    job = q.enqueue_call(
+        func=count_and_save_words, args=(url,), result_ttl=5000
+    )
+    # return created job id
+    print("Right before returning job.get_id")
+    return job.get_id()
 
 @app.route("/results/<job_key>", methods=['GET'])
 def get_results(job_key):
