@@ -67,10 +67,12 @@ def count_and_save_words(url):
             errors.append("Unable to add item to database.")
             return {"errors" : errors}
 
+# home page
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template("index.html")
 
+# process input
 @app.route('/start', methods=['POST'])
 def get_counts():
     # this import solves a rq bug which currently exists
@@ -88,6 +90,7 @@ def get_counts():
     # return created job id
     return job.get_id()
 
+# another way to check on job
 @app.route("/results/<job_key>", methods=['GET'])
 def get_results(job_key):
 

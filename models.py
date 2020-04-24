@@ -7,8 +7,8 @@ class Result(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String())
-    result_all = db.Column(JSON) # a full list of words that we counted
-    result_no_stop_words = db.Column(JSON) #a list of words that we counted minus stop words
+    result_all = db.Column(JSON) # count of the list of words
+    result_no_stop_words = db.Column(JSON) # count of the list of words without stop words
 
     def __init__(self, url, result_all, result_no_stop_words):
         self.url = url

@@ -4,6 +4,7 @@ from rq import Worker, Queue, Connection
 
 listen = ['default']
 
+# heroku instances will grab the REDISTOGO_URL
 redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 
 conn = redis.from_url(redis_url)

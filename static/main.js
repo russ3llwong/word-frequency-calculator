@@ -16,7 +16,7 @@
             $log.log("test");
 
             // get the URL from the input
-            var userInput = $scope.url;
+            let userInput = $scope.url;
 
             // fire the API request
             $http.post('/start', {"url": userInput}).
@@ -37,9 +37,9 @@
 
             $log.log("getWordCount.");
 
-            var timeout = "";
+            let timeout = "";
         
-            var poller = function() {
+            let poller = function() {
             // fire another request
             $http.get('/results/'+jobID).
                 success(function(data, status, headers, config) {
@@ -69,9 +69,7 @@
             poller();
         }
 
-    }
-
-    ])
+    }])
 
     .directive('wordCountChart', ['$parse', function ($parse) {
         return {
@@ -81,22 +79,22 @@
           link: function (scope) {
             scope.$watch('wordcounts', function() {
                 d3.select('#chart').selectAll('*').remove();
-                var data = scope.wordcounts;
-                for (var word in data) {
-                  var key = data[word][0];
-                  var value = data[word][1];
-                  d3.select('#chart')
-                    .append('div')
-                    .selectAll('div')
-                    .data(word)
-                    .enter()
-                    .append('div')
-                    .style('width', function() {
-                      return (value * 3) + 'px';
-                    })
-                    .text(function(d){
-                      return key;
-                    });
+                let data = scope.wordcounts;
+                for (let word in data) {
+                    let key = data[word][0];
+                    let value = data[word][1];
+                    d3.select('#chart')
+                        .append('div')
+                        .selectAll('div')
+                        .data(word)
+                        .enter()
+                        .append('div')
+                        .style('width', function() {
+                        return (value * 3) + 'px';
+                        })
+                        .text(function(d){
+                        return key;
+                        });
                 }
               }, true);
           }
