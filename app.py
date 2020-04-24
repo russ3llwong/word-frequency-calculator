@@ -86,7 +86,6 @@ def get_counts():
         func=count_and_save_words, args=(url,), result_ttl=5000
     )
     # return created job id
-    print("Right before returning job.get_id")
     return job.get_id()
 
 @app.route("/results/<job_key>", methods=['GET'])
@@ -102,7 +101,6 @@ def get_results(job_key):
             reverse=True
         )[:10]
         return jsonify(results)
-        # return str(job.result), 200
     else:
         return "Not done yet!", 202
 
