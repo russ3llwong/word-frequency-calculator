@@ -2,9 +2,11 @@
 
 Flask web app that calculates the word-frequency pairs of a given URL. **Redis** is used for the task queue, while **Angular** is used for the client-side polling.
 
-**Staging**: http://www.freqcalc-stage.herokuapp.com
+**Staging**: http://www.wordfreqcalc-stage.herokuapp.com
 
-**Production**: http://www.freqcalc-prod.herokuapp.com
+**Production**: http://www.wordfreqcalc-prod.herokuapp.com
+
+<img src="http://g.recordit.co/1Mf6nS9YDr.gif"/>
 
 ## Setup
 
