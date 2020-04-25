@@ -13,16 +13,14 @@
 
         $scope.getResults = function() {
 
-            $log.log("test");
-
             // get the URL from the input
             let userInput = $scope.url;
 
             // fire the API request
             $http.post('/start', {"url": userInput}).
-            success(function(results) {
-                $log.log(results);
-                getWordCount(results);
+            success(function(jobId) {
+                $log.log(jobId); 
+                getWordCount(jobId);
                 $scope.wordcounts = null;
                 $scope.loading = true;
                 $scope.submitButtonText = 'Loading...';
@@ -35,12 +33,10 @@
 
         function getWordCount(jobID) {
 
-            $log.log("getWordCount.");
-
             let timeout = "";
         
             let poller = function() {
-            // fire another request
+            // check on job in queue
             $http.get('/results/'+jobID).
                 success(function(data, status, headers, config) {
 
@@ -55,8 +51,7 @@
                         return false;
                     }
 
-                    // continue to call the poller() function every 2 seconds
-                    // until the timeout is cancelled
+                    // calls poller() every 2s until canceled
                     timeout = $timeout(poller, 2000);
                 }).
                 error(function(error) {
@@ -71,6 +66,7 @@
 
     }])
 
+    // for frequency chart & histogram
     .directive('wordCountChart', ['$parse', function ($parse) {
         return {
           restrict: 'E',

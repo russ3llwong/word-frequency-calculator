@@ -18,11 +18,13 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
-q = Queue(connection=conn) # setup redis connection and initialize Queue
+q = Queue(connection=conn)  # setup redis connection and initialize Queue
 
 from models import *
 
+# function to process input and save to db
 def count_and_save_words(url):
+
     errors = []
 
     try:
@@ -36,7 +38,7 @@ def count_and_save_words(url):
     # text processing
     if r:
         raw = BeautifulSoup(r.text, "html.parser").get_text()
-        nltk.data.path.append('./nltk_data/')
+        nltk.data.path.append('./nltk_data/') # access to nltk resources in case nltk not installed
         tokens = nltk.word_tokenize(raw)
         text = nltk.Text(tokens)
 
@@ -56,16 +58,13 @@ def count_and_save_words(url):
                 result_all=raw_word_count,
                 result_no_stop_words=no_stop_words_count
             )
-            print(type(result))
-            print(result.url)
             db.session.add(result)
             db.session.commit()
             print("DB saved")
             return result.id
         except:
-            print("Not saved foo.")
             errors.append("Unable to add item to database.")
-            return {"errors" : errors}
+            return {"errors": errors}
 
 # home page
 @app.route('/', methods=['GET', 'POST'])
@@ -75,10 +74,8 @@ def index():
 # process input
 @app.route('/start', methods=['POST'])
 def get_counts():
-    # this import solves a rq bug which currently exists
-    from app import count_and_save_words
 
-    # get url
+    # process url
     data = json.loads(request.data.decode())
     url = data["url"]
     if not url[:8].startswith(('https://', 'http://')):
@@ -87,10 +84,9 @@ def get_counts():
     job = q.enqueue_call(
         func=count_and_save_words, args=(url,), result_ttl=5000
     )
-    # return created job id
     return job.get_id()
 
-# another way to check on job
+# for angular to check on job
 @app.route("/results/<job_key>", methods=['GET'])
 def get_results(job_key):
 
@@ -105,7 +101,7 @@ def get_results(job_key):
         )[:10]
         return jsonify(results)
     else:
-        return "Not done yet!", 202
+        return "Still counting words.", 202
 
 if __name__ == '__main__':
     app.run()
