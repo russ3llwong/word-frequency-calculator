@@ -1,8 +1,37 @@
 # Word Frequency Calculator
 
-Staging:
-http://www.freqcalc-stage.herokuapp.com
+Flask web app that calculates the word-frequency pairs of a given URL. **Redis** is used for the task queue, while **Angular** is used for the client-side polling.
 
-Production:
-http://www.freqcalc-prod.herokuapp.com
+**Staging**: http://www.freqcalc-stage.herokuapp.com
+
+**Production**: http://www.freqcalc-prod.herokuapp.com
+
+## Setup
+
+### Installations
+```shell
+$ pyvenv-3.5 env
+$ source .env
+$ pip install -r requirements.txt 
+```
+### Database Migration
+```shell
+$ python manage.py db init
+$ python manage.py db migrate
+$ python manage.py db upgrade
+```
+### Run
+Run these in 3 different terminal windows.
+```shell
+$ redis server
+
+$ python worker.py
+
+$ python app.py
+```
+
+## References
+
+- When ```source .env``` is executed in terminal, the commands in the .env file will be executed. This will save you time, not needing to activate the isolated environment and export env variables.
+- The **heroku.sh** file (called by **Procfile**) allows Heroku to run 2 processes in the same dyno. (Not recommended for actual production applications)
 
